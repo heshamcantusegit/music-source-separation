@@ -22,7 +22,7 @@ class TrainConfig:
     CASE = str(ModelConfig.SEQ_LEN) + 'frames_ikala'
     CKPT_PATH = 'checkpoints/' + CASE
     GRAPH_PATH = 'graphs/' + CASE + '/train'
-    DATA_PATH = 'dataset/train/ikala'
+    DATA_PATH = 'dataset/mir-1k'
     LR = 0.0001
     FINAL_STEP = 100000
     CKPT_STEP = 500
