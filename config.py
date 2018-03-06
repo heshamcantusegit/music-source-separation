@@ -31,6 +31,7 @@ class TrainConfig:
     RE_TRAIN = False
     session_conf = tf.ConfigProto(
         device_count={'CPU': 1, 'GPU': 1},
+        log_device_placement=True,
         gpu_options=tf.GPUOptions(
             allow_growth=True,
             per_process_gpu_memory_fraction=0.25
