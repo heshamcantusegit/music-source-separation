@@ -49,11 +49,12 @@ class EvalConfig:
     CKPT_PATH = 'checkpoints/' + CASE
     GRAPH_PATH = 'graphs/' + CASE + '/eval'
     # DATA_PATH = 'dataset/eval/kpop'
-    DATA_PATH = 'dataset/mir-1k/Wavfile'
+    # DATA_PATH = 'dataset/mir-1k/Wavfile'
     # DATA_PATH = 'dataset/ikala'
+    DATA_PATH = 'dataset/test'
     GRIFFIN_LIM = False
     GRIFFIN_LIM_ITER = 1000
-    NUM_EVAL = 9
+    NUM_EVAL = 1 
     SECONDS = 60
     RE_EVAL = True
     EVAL_METRIC = False
