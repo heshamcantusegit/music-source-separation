@@ -47,8 +47,8 @@ class EvalConfig:
     CASE = str(ModelConfig.SEQ_LEN) + 'frames_ikala'
     CKPT_PATH = 'checkpoints/' + CASE
     GRAPH_PATH = 'graphs/' + CASE + '/eval'
-    DATA_PATH = 'dataset/eval/kpop'
-    # DATA_PATH = 'dataset/mir-1k/Wavfile'
+    # DATA_PATH = 'dataset/eval/kpop'
+    DATA_PATH = 'dataset/mir-1k/Wavfile'
     # DATA_PATH = 'dataset/ikala'
     GRIFFIN_LIM = False
     GRIFFIN_LIM_ITER = 1000
