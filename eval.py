@@ -7,6 +7,7 @@ https://www.github.com/andabi
 
 import os
 import shutil
+import sys
 
 import numpy as np
 import tensorflow as tf
@@ -18,7 +19,7 @@ from model import Model
 from preprocess import to_spectrogram, get_magnitude, get_phase, to_wav_mag_only, soft_time_freq_mask, to_wav, write_wav
 
 
-def eval():
+def eval(data_path=None, result_path=None):
     # Model
     model = Model()
     global_step = tf.Variable(0, dtype=tf.int32, trainable=False, name='global_step')
@@ -31,7 +32,8 @@ def eval():
 
         writer = tf.summary.FileWriter(EvalConfig.GRAPH_PATH, sess.graph)
 
-        data = Data(EvalConfig.DATA_PATH)
+        data = Data(data_path) if data_path else Data(EvalConfig.DATA_PATH)
+        output_path = result_path if result_path else EvalConfig.RESULT_PATH
         mixed_wav, src1_wav, src2_wav, wavfiles = data.next_wavs(EvalConfig.SECONDS, EvalConfig.NUM_EVAL)
 
         mixed_spec = to_spectrogram(mixed_wav)
@@ -82,10 +84,11 @@ def eval():
         if EvalConfig.WRITE_RESULT:
             # Write the result
             for i in range(len(wavfiles)):
-                name = wavfiles[i].replace('/', '-').replace('.wav', '')
-                write_wav(mixed_wav[i], '{}/{}-{}'.format(EvalConfig.RESULT_PATH, name, 'original'))
-                write_wav(pred_src1_wav[i], '{}/{}-{}'.format(EvalConfig.RESULT_PATH, name, 'music'))
-                write_wav(pred_src2_wav[i], '{}/{}-{}'.format(EvalConfig.RESULT_PATH, name, 'voice'))
+                name = 'video'
+                print output_path
+                write_wav(mixed_wav[i], '{}/{}-{}'.format(output_path, name, 'original'))
+                write_wav(pred_src1_wav[i], '{}/{}-{}'.format(output_path, name, 'music'))
+                write_wav(pred_src2_wav[i], '{}/{}-{}'.format(output_path, name, 'voice'))
 
         writer.add_summary(sess.run(tf.summary.merge_all()), global_step=global_step.eval())
 
@@ -115,17 +118,23 @@ def bss_eval_global(mixed_wav, src1_wav, src2_wav, pred_src1_wav, pred_src2_wav)
     return gnsdr, gsir, gsar
 
 
-def setup_path():
+def setup_path(result_path=None):
+    res_path = result_path if result_path else EvalConfig.RESULT_PATH
     if EvalConfig.RE_EVAL:
         if os.path.exists(EvalConfig.GRAPH_PATH):
             shutil.rmtree(EvalConfig.GRAPH_PATH)
-        if os.path.exists(EvalConfig.RESULT_PATH):
-            shutil.rmtree(EvalConfig.RESULT_PATH)
+        if os.path.exists(res_path):
+            shutil.rmtree(res_path)
 
-    if not os.path.exists(EvalConfig.RESULT_PATH):
-        os.makedirs(EvalConfig.RESULT_PATH)
+    if not os.path.exists(res_path):
+        os.makedirs(res_path)
 
 
 if __name__ == '__main__':
-    setup_path()
-    eval()
+    data_path = None
+    result_path = None
+    if len(sys.argv) > 2:
+        data_path = sys.argv[1]
+        result_path = sys.argv[2]
+    setup_path(result_path)
+    eval(data_path, result_path)
